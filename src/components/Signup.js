@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { useHistory } from "react-router";
 
-const Signup = () => {
+const Signup = (props) => {
   let history = useHistory();
   const host = "http://localhost:5000";
   const [credentials, setCredentials] = useState({name:"", email:"",password:"", cpassword:""})
@@ -11,7 +11,22 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const {name, email, password} = credentials
-    const response = await fetch(`${host}/api/auth/createuser`, {
+    // const response = await fetch(`${host}/api/auth/createuser`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({name, email, password})
+    // });
+    // const json = await response.json();
+    // console.log(json);
+    // console.log(password)
+    // console.log(credentials.cpassword);
+    // console.log(password===credentials.cpassword);
+    if(password===credentials.cpassword){
+      // redirect: Save the authtoken and redirect
+      // localStorage.setItem('token',json.authToken)
+      const response = await fetch(`${host}/api/auth/createuser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,15 +35,20 @@ const Signup = () => {
     });
     const json = await response.json();
     console.log(json);
-    if(json.success){
-      // redirect: Save the authtoken and redirect
-      localStorage.setItem('token',json.authToken)
-      history.push("/")
+    console.log(password)
+    console.log(credentials.cpassword);
+    console.log(password===credentials.cpassword);
+      props.showAlert("Created User successfully", "success")
+      history.push("/login")
 
     }
-    else{
-      alert("invalid credentials")
+   else if(password!==credentials.cpassword){
+      props.showAlert("Password doesn't match", "danger")
+  
     }
+    // else{
+    //   props.showAlert("Invalid Details", "danger")
+    // }
   };
   return (
     <div>
@@ -84,7 +104,7 @@ const Signup = () => {
             Confirm Password
           </label>
           <input
-            type="cpassword"
+            type="password"
             className="form-control"
             id="cpassword"
             name="cpassword"

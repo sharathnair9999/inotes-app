@@ -1,7 +1,7 @@
 import React, {useState} from "react"
-import {useHistory} from 'react-router-dom'
+import {useHistory, Link} from 'react-router-dom'
 
-const Login = () => {
+const Login = (props) => {
   const [credentials, setCredentials] = useState({email:"", password:""})
   let history = useHistory()
   const host = "http://localhost:5000";
@@ -20,10 +20,11 @@ const Login = () => {
       // redirect: Save the authtoken and redirect
       localStorage.setItem('token',json.authToken)
       history.push("/")
+      props.showAlert("Logged In successfully", "success")
 
     }
     else{
-      alert("invalid credentials")
+      props.showAlert("Invalid Credentials", "danger")
     }
   };
   const onChange = (e)=>{
@@ -71,6 +72,7 @@ const Login = () => {
         >
           Submit
         </button>
+        <Link className=" mx-2 logout" to="/signup" >New User?</Link>
       </form>
     </div>
   );
